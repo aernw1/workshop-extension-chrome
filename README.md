@@ -1,8 +1,6 @@
-Voici une version remaniée du workshop sur la création d'extensions Chrome, divisée en sections plus petites et plus progressives :
+# 🚀 Workshop Extensions Chrome
 
-# 🚀 Workshop Extensions Chrome - Version Progressive
-
-## Introduction (15 minutes)
+## Introduction
 
 Bonjour et bienvenue à ce workshop sur la création d'extensions Chrome ! Au cours des prochaines heures, nous allons explorer ensemble comment développer vos propres extensions pour le navigateur Chrome.
 
@@ -16,7 +14,7 @@ Bonjour et bienvenue à ce workshop sur la création d'extensions Chrome ! Au co
 - Google Chrome installé
 - Un éditeur de code (VS Code recommandé)
 
-## Partie 1 : Découverte des Extensions Chrome (30 minutes)
+## Partie 1 : Découverte des Extensions Chrome
 
 ### 1.1 Qu'est-ce qu'une extension Chrome ?
 Une extension Chrome est un petit programme qui étend ou modifie les fonctionnalités du navigateur Chrome. Elles sont construites avec des technologies web standards que vous connaissez déjà : HTML, CSS et JavaScript.
@@ -34,7 +32,7 @@ Les extensions peuvent :
 - Outils de productivité (Grammarly, Evernote Web Clipper)
 - Extensions de personnalisation (Dark Reader)
 
-## Partie 2 : Anatomie d'une Extension Chrome (45 minutes)
+## Partie 2 : Anatomie d'une Extension Chrome
 
 ### 2.1 Le fichier manifest.json
 Le fichier manifest.json est le cœur de votre extension. C'est un fichier de configuration qui décrit votre extension à Chrome.
@@ -126,7 +124,7 @@ Exemple d'options.html :
 </html>
 ```
 
-## Partie 3 : Configuration de l'Environnement de Développement (20 minutes)
+## Partie 3 : Configuration de l'Environnement de Développement
 
 ### 3.1 Création de la structure du projet
 Créez un nouveau dossier pour votre projet avec cette structure de base :
@@ -256,8 +254,6 @@ addIconsToFiles();
 1. Allez sur un dépôt GitHub
 2. Vérifiez que les icônes apparaissent à côté des noms de fichiers
 3. Naviguez dans le dépôt pour tester le rechargement AJAX
-
-## Pause (15 minutes)
 
 ## Partie 5 : Projet 2 - GitHub Background Themes (1 heure)
 
@@ -527,7 +523,7 @@ function isColorDark(color) {
 3. Cliquez sur "Appliquer" et vérifiez que le thème est appliqué
 4. Rechargez la page pour vérifier que le thème persiste
 
-## Partie 6 : Techniques Avancées et Bonnes Pratiques (30 minutes)
+## Partie 6 : Techniques Avancées et Bonnes Pratiques
 
 ### 6.1 Bonnes pratiques de développement
 1. **Organisation du code** :
@@ -556,61 +552,16 @@ function isColorDark(color) {
 3. **Recharger l'extension** :
    - Après modifications : chrome://extensions/ → ↻
 
-### 6.3 Publication sur le Chrome Web Store
-1. **Préparation du package** :
-   - Vérifier le manifest.json
-   - Tester sur différentes pages
-   - Préparer les captures d'écran
-
-2. **Processus de soumission** :
-   - Créer un compte développeur ($5)
-   - Remplir les informations de l'extension
-   - Soumettre pour examen
-
-3. **Conseils pour le succès** :
-   - Description claire et concise
-   - Captures d'écran de qualité
-   - Vidéo de démonstration
-   - Support utilisateur réactif
-
-## Partie 7 : Session Pratique Libre (30 minutes)
+## Partie 7 : Libre à vous de créer votre propre extension !
 
 ### 7.1 Personnalisation des projets
 - Ajoutez des fonctionnalités supplémentaires à vos extensions
 - Expérimentez avec les concepts appris
 - Essayez de combiner des éléments des deux projets
 
-### 7.2 Idées d'amélioration
-Pour GitHub File Icons :
-- Ajouter plus d'icônes de fichiers
-- Permettre la personnalisation des icônes
-- Ajouter des options de taille et position
-
-Pour GitHub Background Themes :
-- Ajouter plus d'options de thème
-- Permettre l'import/export de thèmes
-- Ajouter un système de thèmes prédéfinis
-
-### 7.3 Questions/Réponses
-- Réponses aux questions spécifiques
-- Discussion des cas d'usage personnels
-- Partage d'expériences entre participants
-
-## Conclusion (15 minutes)
-
-### Récapitulatif
-- Nous avons couvert les concepts fondamentaux des extensions Chrome
-- Créé deux extensions complètes de A à Z
-- Appris les bonnes pratiques de développement
-
 ### Ressources pour aller plus loin
 - [Documentation officielle Chrome Extensions](https://developer.chrome.com/docs/extensions/)
 - [Exemples d'extensions](https://github.com/GoogleChrome/chrome-extensions-samples)
 - [Forum des développeurs Chrome](https://groups.google.com/a/chromium.org/g/chromium-extensions)
 
-### Feedback
-- Vos impressions sur le workshop
-- Ce que vous avez préféré
-- Ce que nous pourrions améliorer
-
-Merci d'avoir participé à ce workshop ! N'hésitez pas à continuer à expérimenter avec les extensions Chrome et à partager vos créations.
+Merci d'avoir participé à ce workshop ! N'hésitez pas à continuer à expérimenter avec les extensions Chrome et à nous partager vos créations.
