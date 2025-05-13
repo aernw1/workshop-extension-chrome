@@ -199,10 +199,7 @@ const fileIcons = {
   'md': 'icons/markdown.png',
   'json': 'icons/json.png',
   'png': 'icons/image.png',
-  'jpg': 'icons/image.png',
-  'jpeg': 'icons/image.png',
-  'gif': 'icons/image.png',
-  'svg': 'icons/image.png'
+  // etc ...
 };
 
 // 2. Fonction pour ajouter des icônes aux fichiers
