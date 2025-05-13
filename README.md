@@ -64,12 +64,12 @@ Ce fichier est le cœur de votre extension. Voici un exemple simplifié avec des
 
 ## 📝 Programme du workshop (3h30)
 
-### Introduction (30 min)
+### Introduction
 - Qu'est-ce qu'une extension Chrome et comment ça fonctionne?
 - Structure d'une extension et rôle de chaque composant
 - Configuration avec manifest.json
 
-### Projet 1: GitHub File Icons (1h)
+### Projet 1: GitHub File Icons
 Nous allons créer ensemble une extension qui ajoute des icônes aux fichiers sur GitHub.
 
 **Ce que vous allez apprendre:**
@@ -77,7 +77,7 @@ Nous allons créer ensemble une extension qui ajoute des icônes aux fichiers su
 - Comment détecter les changements de page avec MutationObserver
 - Comment accéder aux ressources de votre extension
 
-### Projet 2: GitHub Background Themes (1h30)
+### Projet 2: GitHub Background Themes
 Dans ce projet, nous créerons une extension permettant de personnaliser l'arrière-plan de GitHub.
 
 **Ce que vous allez apprendre:**
@@ -85,7 +85,7 @@ Dans ce projet, nous créerons une extension permettant de personnaliser l'arri�
 - Comment stocker les préférences utilisateur avec chrome.storage
 - Comment faire communiquer différentes parties de votre extension
 
-### Exploration et personnalisation (30 min)
+### Exploration et personnalisation
 - Temps pour personnaliser vos extensions
 - Ajout de fonctionnalités supplémentaires selon vos idées
 
@@ -197,8 +197,8 @@ addIconsToFiles();
 Créer une extension qui permet de personnaliser l'apparence de GitHub avec des couleurs ou images d'arrière-plan.
 
 #### Comment ça marche:
-1. Cliquer sur l'icône de l'extension ouvre une popup
-2. La popup permet de choisir une couleur, une image ou un thème dynamique
+1. Cliquer sur l'icône de l'extension ouvre un popup
+2. Le popup permet de choisir une couleur, une image ou un thème dynamique
 3. Les paramètres sont sauvegardés et appliqués à toutes les pages GitHub
 
 #### Les étapes clés:
@@ -343,7 +343,7 @@ chrome.storage.local.get(['themeType', 'themeColor', 'themeImage'], (result) => 
   }
 });
 
-// Écouter les messages de la popup
+// Écouter les messages de le popup
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'applyTheme') {
     applyTheme(message.theme);
@@ -432,7 +432,7 @@ Tout développeur d'extensions doit savoir comment déboguer efficacement:
 1. **Console du navigateur**: Pour voir les logs et erreurs
    - Clic droit sur la page → Inspecter → Console
 
-2. **Inspecter la popup**:
+2. **Inspecter le popup**:
    - Clic droit sur l'icône de l'extension → Inspecter
 
 3. **Recharger l'extension**:
@@ -716,7 +716,7 @@ function addIconsToFiles() {
 ### Projet 2: GitHub Background Themes - Progression
 
 #### Exercice 2.1: Créer l'interface popup de base
-Commencez par créer le manifest.json et une popup simple qui affiche un message.
+Commencez par créer le manifest.json et un popup simple qui affiche un message.
 
 ```json
 // manifest.json
@@ -774,7 +774,7 @@ console.log("Extension GitHub Themes chargée sur cette page GitHub!");
 **Objectif**: Créer la structure de base de l'extension avec popup.
 
 #### Exercice 2.2: Ajouter un sélecteur de couleur
-Ajoutez un sélecteur de couleur à la popup et affichez la couleur sélectionnée.
+Ajoutez un sélecteur de couleur au popup et affichez la couleur sélectionnée.
 
 ```html
 <!-- popup.html mis à jour -->
@@ -847,7 +847,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 ```
 
-**Objectif**: Apprendre à créer une interface utilisateur interactive dans la popup.
+**Objectif**: Apprendre à créer une interface utilisateur interactive dans le popup.
 
 #### Exercice 2.3: Ajouter un bouton d'application et communiquer avec content.js
 Ajoutez un bouton pour appliquer la couleur et envoyez-la au content script.
@@ -897,7 +897,7 @@ document.addEventListener('DOMContentLoaded', function() {
 ```
 
 ```javascript
-// Écouter les messages de la popup
+// Écouter les messages du popup
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("Message reçu:", message);
   
@@ -1119,7 +1119,7 @@ chrome.storage.local.get(['themeType', 'backgroundColor', 'backgroundImage'], fu
   }
 });
 
-// Écouter les messages de la popup
+// Écouter les messages du popup
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'applyTheme') {
     applyTheme(message.theme);
