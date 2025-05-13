@@ -197,7 +197,8 @@ const fileIcons = {
   'md': 'icons/markdown.png',
   'json': 'icons/json.png',
   'png': 'icons/image.png',
-  // etc ...
+  // certaines icônes sont disponibles dans le dossier icons du dépôt
+  // vous pouvez rajouter ou bien personnaliser les icônes comme bon vous semble :)
 };
 
 // 2. Fonction pour ajouter des icônes aux fichiers
@@ -239,7 +240,6 @@ const observer = new MutationObserver(mutations => {
 observer.observe(document.body, { childList: true, subtree: true });
 addIconsToFiles();
 ```
-
 ### 4.4 Explications du code
 1. **Dictionnaire des icônes** : Nous définissons quelles icônes utiliser pour quelles extensions de fichiers.
 2. **Fonction addIconsToFiles** :
