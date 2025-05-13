@@ -133,14 +133,8 @@ Créez un nouveau dossier pour votre projet avec cette structure de base :
 mon-extension/
 ├── manifest.json
 ├── icons/
-│   ├── icon16.png
-│   ├── icon48.png
-│   └── icon128.png
-├── popup/
-│   ├── popup.html
-│   ├── popup.js
-│   └── popup.css
-├── content.js
+│   ├── // tous vos .png
+├── styles.css
 └── background.js
 ```
 
