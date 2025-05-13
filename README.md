@@ -161,85 +161,151 @@ Nous allons créer une extension qui ajoute des icônes aux fichiers sur GitHub 
 ### 4.2 Configuration du manifest.json
 ```json
 {
-  "manifest_version": 3,
-  "name": "GitHub File Icons",
-  "version": "1.0",
-  "description": "Ajoute des icônes aux fichiers sur GitHub",
-  "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
-  },
-  "content_scripts": [
-    {
-      "matches": ["https://github.com/*"],
-      "js": ["content.js"]
-    }
-  ],
-  "web_accessible_resources": [{
-    "resources": ["icons/*"],
-    "matches": ["https://github.com/*"]
-  }]
+    "manifest_version": 3,
+    "name": "GitHub File Icons",
+    "version": "1.0",
+    "description": "Adds visual icons for different file types in GitHub's repository explorer",
+    "permissions": [
+      "storage"
+    ],
+    "content_scripts": [
+      {
+        "matches": ["*://github.com/*"],
+        "js": ["content.js"],
+        "css": ["styles.css"]
+      }
+    ],
+    "web_accessible_resources": [{
+      "resources": ["icons/*"],
+      "matches": ["https://github.com/*"]
+    }]
 }
 ```
+
 
 ### 4.3 Création du content script
 Voici comment nous allons procéder dans content.js :
 
 ```javascript
-// 1. Définir un dictionnaire des extensions et leurs icônes
+// Objet contenant les extensions de fichiers et leurs icônes correspondantes
 const fileIcons = {
-  'js': 'icons/js.png',
-  'css': 'icons/css.png',
-  'html': 'icons/html.png',
-  'py': 'icons/python.png',
-  'java': 'icons/java.png',
-  'md': 'icons/markdown.png',
-  'json': 'icons/json.png',
-  'png': 'icons/image.png',
-  // certaines icônes sont disponibles dans le dossier icons du dépôt
-  // vous pouvez rajouter ou bien personnaliser les icônes comme bon vous semble :)
+    '.js': 'js.png',
+    '.json': 'js.png',
+    '.tsx': 'ts.png',
+    '.ts': 'ts.png',
+    '.css': 'css.png',
+    '.html': 'html.png',
+    '.py': 'python.png',
+    '.sh': 'bash.png',
+    '.c': 'c.png',
+    '.h': 'c.png',
+    '.cpp': 'cpp.png',
+    '.hpp': 'cpp.png',
+    '.hs': 'haskell.png',
 };
 
-// 2. Fonction pour ajouter des icônes aux fichiers
-function addIconsToFiles() {
-  // Trouver tous les éléments représentant des fichiers
-  const fileElements = document.querySelectorAll('.js-navigation-item');
-
-  fileElements.forEach(file => {
-    // Extraire le nom du fichier
-    const fileName = file.querySelector('.js-navigation-open').textContent;
-
-    // Obtenir l'extension (après le dernier point)
-    const extension = fileName.split('.').pop();
-
-    if (fileIcons[extension]) {
-      // Créer et ajouter l'icône
-      const icon = document.createElement('img');
-      icon.src = chrome.runtime.getURL(fileIcons[extension]);
-      icon.className = 'file-icon';
-      icon.style.width = '16px';
-      icon.style.marginRight = '5px';
-
-      // Insérer avant le nom du fichier
-      file.querySelector('.js-navigation-open').prepend(icon);
+/**
+ * Ajoute des icônes aux fichiers dans la liste
+ */
+function addFileIcons() {
+    try {
+        console.log('Running addFileIcons');
+        // Sélectionne toutes les lignes de fichiers
+        const fileRows = document.querySelectorAll('a.Link--primary[title][aria-label]');
+        console.log(`Found ${fileRows.length} file rows`);
+        // Pour chaque ligne de fichier
+        fileRows.forEach(element => {
+            if (element.tagName === 'A') {
+                const fileName = element.textContent.trim();
+                // Extrait l'extension du fichier
+                const extension = fileName.match(/\.[0-9a-z]+$/i)?.[0]?.toLowerCase();
+                // Si l'extension est connue et qu'il n'y a pas déjà une icône
+                if (extension && fileIcons[extension] && !element.querySelector('.file-icon')) {
+                    const iconPath = 'icons/' + fileIcons[extension];
+                    // Ajoute l'icône au début de l'élément
+                    element.prepend(createFileIcon(iconPath));
+                }
+                console.log(`Processing file: ${fileName}`);
+            }
+        });
+    } catch (error) {
+        console.error('Error in addFileIcons:', error);
+        // Si le contexte de l'extension est invalidé, recharge la page
+        if (error.message.includes('Extension context invalidated')) {
+            console.log('Extension context invalidated, reloading...');
+            window.location.reload();
+        }
     }
-  });
 }
 
-// 3. Observer les changements de page (navigation GitHub en AJAX)
+// Observe les changements dans le DOM pour ajouter des icônes aux nouveaux fichiers
 const observer = new MutationObserver(mutations => {
-  for (let mutation of mutations) {
-    if (mutation.addedNodes.length) {
-      addIconsToFiles();
-    }
-  }
+    mutations.forEach(mutation => {
+        if (mutation.addedNodes.length) {
+            addFileIcons();
+        }
+    });
 });
 
-// 4. Démarrer l'observation et ajouter les icônes initiales
-observer.observe(document.body, { childList: true, subtree: true });
-addIconsToFiles();
+// Cible le nœud racine de l'application React ou le body
+const targetNode = document.getElementById('react-root') || document.body;
+if (targetNode) {
+    // Observe les changements dans le nœud cible
+    observer.observe(targetNode, { childList: true, subtree: true });
+} else {
+    console.error('Could not find a valid target node for MutationObserver');
+}
+
+// Ajoute les icônes aux fichiers existants
+addFileIcons();
+
+
+function createFileIcon(iconPath) {
+    const icon = document.createElement('img');
+    // Gère les erreurs de chargement de l'icône
+    icon.onerror = function() {
+        console.error(`Failed to load icon: ${iconPath}`);
+        console.log('Attempted full URL:', chrome.runtime.getURL(iconPath));
+        console.log('Current extension context:', chrome.runtime.id);
+        console.log('Extension manifest:', chrome.runtime.getManifest());
+        this.style.display = 'none';
+    };
+    icon.src = chrome.runtime.getURL(iconPath);
+    icon.className = 'file-icon';
+    icon.style.width = '20px';
+    icon.style.height = '20px';
+    icon.style.marginRight = '5px';
+    icon.style.verticalAlign = 'middle';
+    icon.alt = '';
+    return icon;
+}
+
 ```
+
+et comment nous allons procéder dans syles.css :
+```css
+/* Style pour les icônes de fichiers */
+.file-icon {
+    width: 20px; /* Largeur de l'icône */
+    height: 20px; /* Hauteur de l'icône */
+    margin-right: 5px; /* Marge à droite de l'icône */
+    vertical-align: text-bottom !important; /* Alignement vertical */
+}
+
+/* Masquer les icônes par défaut d'Octicon */
+.octicon.octicon-file {
+    display: none !important;
+}
+
+/* Style spécifique pour les icônes de fichiers C, C++ et Haskell */
+.file-icon[src*="c.png"],
+.file-icon[src*="cpp.png"],
+.file-icon[src*="haskell.png"] {
+    vertical-align: text-bottom !important; /* Alignement vertical */
+    margin-top: -1px; /* Ajustement de la marge supérieure */
+}
+```
+
 ### 4.4 Explications du code
 1. **Dictionnaire des icônes** : Nous définissons quelles icônes utiliser pour quelles extensions de fichiers.
 2. **Fonction addIconsToFiles** :
