@@ -77,9 +77,7 @@ Nous allons créer ensemble une extension qui ajoute des icônes aux fichiers su
 - Comment détecter les changements de page avec MutationObserver
 - Comment accéder aux ressources de votre extension
 
-### Pause (15 min)
-
-### Projet 2: GitHub Background Themes (1h15)
+### Projet 2: GitHub Background Themes (1h30)
 Dans ce projet, nous créerons une extension permettant de personnaliser l'arrière-plan de GitHub.
 
 **Ce que vous allez apprendre:**
