@@ -147,7 +147,7 @@ mon-extension/
 ### 3.3 Rechargement après modifications
 Après avoir modifié des fichiers, revenez à `chrome://extensions/` et cliquez sur l'icône de rechargement (↻) de votre extension pour appliquer les changements.
 
-## Partie 4 : Projet 1 - GitHub File Icons (1 heure)
+## Partie 4 : Projet 1 - GitHub File Icons
 
 ### 4.1 Introduction au projet
 Nous allons créer une extension qui ajoute des icônes aux fichiers sur GitHub pour une meilleure identification visuelle.
@@ -315,8 +315,7 @@ et comment nous allons procéder dans syles.css :
 2. Vérifiez que les icônes apparaissent à côté des noms de fichiers
 3. Naviguez dans le dépôt pour tester le rechargement AJAX
 
-## Partie 5 : Projet 2 - GitHub Background Themes (1 heure)
-
+## Partie 5 : Projet 2 - GitHub Background Themes
 ### 5.1 Introduction au projet
 Nous allons créer une extension qui permet de personnaliser l'apparence de GitHub avec des couleurs ou images d'arrière-plan.
 
