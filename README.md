@@ -80,7 +80,7 @@ chrome.runtime.onInstalled.addListener(() => {
 ```
 
 #### c) Popup
-La popup est l'interface utilisateur qui apparaît lorsque vous cliquez sur l'icône de l'extension dans la barre d'outils.
+Le popup est l'interface utilisateur qui apparaît lorsque vous cliquez sur l'icône de l'extension dans la barre d'outils.
 
 Exemple de popup.html :
 
@@ -349,7 +349,7 @@ Nous allons créer une extension qui permet de personnaliser l'apparence de GitH
 }
 ```
 
-### 5.3 Création de la popup
+### 5.3 Création du popup
 popup.html :
 ```html
 <!DOCTYPE html>
@@ -568,16 +568,16 @@ function isColorDark(color) {
 
 2. **Content Script** :
    - Application du thème au chargement de la page
-   - Écoute des messages de la popup
+   - Écoute des messages du popup
    - Fonction d'application du thème
    - Ajustement du contraste du texte
 
 3. **Communication** :
    - Utilisation de chrome.storage pour sauvegarder les préférences
-   - Envoi de messages entre la popup et le content script
+   - Envoi de messages entre le popup et le content script
 
 ### 5.7 Test de l'extension
-1. Cliquez sur l'icône de l'extension pour ouvrir la popup
+1. Cliquez sur l'icône de l'extension pour ouvrir le popup
 2. Sélectionnez un type de thème et configurez-le
 3. Cliquez sur "Appliquer" et vérifiez que le thème est appliqué
 4. Rechargez la page pour vérifier que le thème persiste
