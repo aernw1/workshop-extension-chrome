@@ -736,4 +736,4 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 - [Forum des développeurs Chrome](https://groups.google.com/a/chromium.org/g/chromium-extensions)
 
 Merci d'avoir participé à ce workshop ! N'hésitez pas à continuer à expérimenter avec les extensions Chrome et à nous partager vos créations.
-Workkshop réalisé par @dryss10 et @aernw
+Workkshop réalisé par Dryss Margueritte et Erwan Seytor
