@@ -322,31 +322,22 @@ Nous allons créer une extension qui permet de personnaliser l'apparence de GitH
 ### 5.2 Configuration du manifest.json
 ```json
 {
-  "manifest_version": 3,
-  "name": "GitHub Themes",
-  "version": "1.0",
-  "description": "Personnalise l'arrière-plan de GitHub",
-  "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
-  },
-  "permissions": ["storage"],
-  "host_permissions": ["https://github.com/*"],
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png"
+    "manifest_version": 3,
+    "name": "GitHub Back",
+    "version": "1.0",
+    "description": "Change le fond de GitHub dynamiquement ou par couleur choisie",
+    "permissions": ["activeTab", "storage"],
+    "host_permissions": ["https://api.github.com/*"],
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "content_scripts": [
+      {
+        "matches": ["*://github.com/*/*"],
+        "js": ["content.js"]
+      }]
     }
-  },
-  "content_scripts": [
-    {
-      "matches": ["https://github.com/*"],
-      "js": ["content.js"]
-    }
-  ]
-}
+
 ```
 
 ### 5.3 Création du popup
@@ -355,58 +346,99 @@ popup.html :
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
+  <title>back-git</title>
   <style>
     body {
-      width: 250px;
-      padding: 10px;
-      font-family: Arial, sans-serif;
+      width: 300px;
+      padding: 15px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
-    .option {
-      margin-bottom: 10px;
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .section {
+      background: #f6f8fa;
+      border: 1px solid #e1e4e8;
+      border-radius: 6px;
+      padding: 12px;
+    }
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #24292e;
     }
     #colorPicker {
       width: 100%;
-      height: 30px;
+      height: 40px;
+      border: 1px solid #e1e4e8;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #imageUpload {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #e1e4e8;
+      border-radius: 6px;
+      background: white;
     }
     #imagePreview {
       max-width: 100%;
-      margin-top: 5px;
-      border: 1px solid #ddd;
+      max-height: 150px;
+      border-radius: 6px;
+      display: none;
+      margin-top: 8px;
     }
     button {
-      width: 100%;
-      padding: 8px;
-      background-color: #4CAF50;
+      background: #2ea44f;
       color: white;
       border: none;
-      border-radius: 4px;
+      padding: 8px 16px;
+      border-radius: 6px;
       cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.2s;
     }
     button:hover {
-      background-color: #45a049;
+      background: #2c974b;
+    }
+    #removeImage {
+      background: #d73a49;
+      display: none;
+    }
+    #removeImage:hover {
+      background: #cb2431;
+    }
+    #dynamicButton {
+      background: #0366d6;
+    }
+    #dynamicButton:hover {
+      background: #024ea4;
     }
   </style>
 </head>
 <body>
-  <h3>GitHub Themes</h3>
+  <div class="container">
+    <div class="section">
+      <div class="section-title">Solid Color</div>
+      <input type="color" id="colorPicker">
+    </div>
 
-  <div class="option">
-    <label><input type="radio" name="themeType" value="color" checked> Couleur</label>
-    <input type="color" id="colorPicker" value="#f0f0f0">
+    <div class="section">
+      <div class="section-title">Dynamic Background</div>
+      <button id="dynamicButton">Set Animated Gradient</button>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Custom Image</div>
+      <input type="file" id="imageUpload" accept="image/*">
+      <img id="imagePreview">
+      <button id="removeImage">Remove Image</button>
+    </div>
   </div>
-
-  <div class="option">
-    <label><input type="radio" name="themeType" value="image"> Image</label>
-    <input type="file" id="imageUpload" accept="image/*">
-    <img id="imagePreview" style="display: none;">
-  </div>
-
-  <div class="option">
-    <label><input type="radio" name="themeType" value="dynamic"> Dégradé dynamique</label>
-  </div>
-
-  <button id="saveButton">Appliquer</button>
-
   <script src="popup.js"></script>
 </body>
 </html>
@@ -414,150 +446,230 @@ popup.html :
 
 ### 5.4 Création du script popup.js
 ```javascript
-// Récupérer les éléments du DOM
-const radioButtons = document.querySelectorAll('input[name="themeType"]');
-const colorPicker = document.getElementById('colorPicker');
-const imageUpload = document.getElementById('imageUpload');
-const imagePreview = document.getElementById('imagePreview');
-const saveButton = document.getElementById('saveButton');
-
-// Charger les préférences sauvegardées
-chrome.storage.local.get(['themeType', 'themeColor', 'themeImage'], (result) => {
-  if (result.themeType) {
-    // Sélectionner le bon radio button
-    document.querySelector(`input[value="${result.themeType}"]`).checked = true;
-
-    // Restaurer les valeurs
-    if (result.themeColor) colorPicker.value = result.themeColor;
-    if (result.themeImage) {
-      imagePreview.src = result.themeImage;
-      imagePreview.style.display = 'block';
+// Load saved background when popup opens
+chrome.storage.local.get(['savedColor', 'savedImage', 'savedType'], function(result) {
+    console.log('Popup loading saved background:', result);
+    if (result.savedColor) {
+        document.getElementById('colorPicker').value = result.savedColor;
     }
-  }
+    if (result.savedImage) {
+        document.getElementById('imagePreview').src = result.savedImage;
+        document.getElementById('imagePreview').style.display = 'block';
+        document.getElementById('removeImage').style.display = 'block';
+    }
 });
 
-// Aperçu d'image téléchargée
-imageUpload.addEventListener('change', () => {
-  const file = imageUpload.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      imagePreview.src = e.target.result;
-      imagePreview.style.display = 'block';
-    };
-    reader.readAsDataURL(file);
-  }
-});
-
-// Sauvegarder et appliquer le thème
-saveButton.addEventListener('click', () => {
-  // Déterminer quel type de thème est sélectionné
-  const selectedType = document.querySelector('input[name="themeType"]:checked').value;
-
-  // Préparer les données à sauvegarder
-  const themeData = { themeType: selectedType };
-
-  if (selectedType === 'color') {
-    themeData.themeColor = colorPicker.value;
-  } else if (selectedType === 'image' && imagePreview.src) {
-    themeData.themeImage = imagePreview.src;
-  }
-
-  // Sauvegarder dans le stockage local
-  chrome.storage.local.set(themeData, () => {
-    // Envoyer un message au content script
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, {
-        action: 'applyTheme',
-        theme: themeData
-      });
+// Color picker
+document.getElementById('colorPicker').addEventListener('change', function(e) {
+    const color = e.target.value;
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+            action: 'setColor',
+            color: color
+        });
     });
-  });
 });
+
+// Dynamic background button
+document.getElementById('dynamicButton').addEventListener('click', function() {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+            action: 'setDynamicBackground'
+        });
+    });
+});
+
+// Image upload
+document.getElementById('imageUpload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Check file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+        alert('Image size must be less than 5MB');
+        return;
+    }
+
+    // Check if it's an image
+    if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        return;
+    }
+
+    console.log('File selected:', file.name, file.type, file.size);
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const imageData = e.target.result;
+        console.log('File read complete, data length:', imageData.length);
+        
+        // Show preview
+        const preview = document.getElementById('imagePreview');
+        preview.src = imageData;
+        preview.style.display = 'block';
+        document.getElementById('removeImage').style.display = 'block';
+        
+        // Send to content script
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {
+                action: 'setImage',
+                imageData: imageData
+            }, function(response) {
+                if (chrome.runtime.lastError) {
+                    console.error('Error sending message:', chrome.runtime.lastError);
+                    return;
+                }
+                console.log('Image sent to content script');
+            });
+        });
+    };
+    
+    reader.onerror = function(error) {
+        console.error('Error reading file:', error);
+        alert('Error reading file. Please try again.');
+    };
+    
+    reader.readAsDataURL(file);
+});
+
+// Remove image
+document.getElementById('removeImage').addEventListener('click', function() {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+            action: 'removeImage'
+        });
+    });
+    
+    // Update UI
+    document.getElementById('imagePreview').style.display = 'none';
+    document.getElementById('imagePreview').src = '';
+    document.getElementById('removeImage').style.display = 'none';
+    document.getElementById('imageUpload').value = '';
+});
+
 ```
 
-### 5.5 Création du content script
+### 5.5 Création du content script content.js
 ```javascript
-// Appliquer le thème sauvegardé au chargement de la page
-chrome.storage.local.get(['themeType', 'themeColor', 'themeImage'], (result) => {
-  if (result.themeType) {
-    applyTheme(result);
-  }
+function setBackground(type, value) {
+    // Reset all background properties
+    document.body.style.backgroundImage = 'none';
+    document.body.style.backgroundColor = 'transparent';
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundRepeat = 'no-repeat';
+    document.body.style.transition = 'all 0.3s ease';
+    document.body.style.animation = 'none'; // Reset any animation
+
+    switch(type) {
+        case 'color':
+            document.body.style.backgroundColor = value;
+            break;
+        case 'image':
+            document.body.style.backgroundImage = `url(${value})`;
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundPosition = 'center';
+            document.body.style.backgroundRepeat = 'no-repeat';
+            document.body.style.backgroundAttachment = 'fixed'; // Keep image fixed while scrolling
+            document.body.style.opacity = '0.8';
+            document.body.style.animation = 'none'; // Ensure no animation is applied
+            break;
+        case 'dynamic':
+            // Create gradient animation
+            document.body.style.background = 'linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)';
+            document.body.style.backgroundSize = '400% 400%';
+            document.body.style.animation = 'gradient 15s ease infinite';
+            document.body.style.opacity = '0.9';
+            break;
+    }
+}
+
+// Add gradient animation style
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+`;
+document.head.appendChild(style);
+
+// Load saved background when page loads
+chrome.storage.local.get(['savedColor', 'savedImage', 'savedType'], function(result) {
+    console.log('Content script loading saved background:', result);
+    if (result.savedType === 'dynamic') {
+        setBackground('dynamic');
+    } else if (result.savedImage) {
+        console.log('Attempting to load saved image');
+        try {
+            setBackground('image', result.savedImage);
+            console.log('Background image set successfully');
+        } catch (error) {
+            console.error('Error setting background image:', error);
+            chrome.storage.local.remove(['savedImage', 'savedType']);
+        }
+    } else if (result.savedColor) {
+        console.log('Loading saved color:', result.savedColor);
+        setBackground('color', result.savedColor);
+    }
 });
 
-// Écouter les messages de le popup
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === 'applyTheme') {
-    applyTheme(message.theme);
-  }
+    console.log('Content script received message:', message.action);
+    
+    if (message.action === 'setColor') {
+        setBackground('color', message.color);
+        // Save the color to storage
+        chrome.storage.local.set({ 
+            savedColor: message.color,
+            savedType: 'color'
+        });
+        // Remove saved image when setting color
+        chrome.storage.local.remove(['savedImage']);
+    }
+    else if (message.action === 'setImage') {
+        console.log('Setting new image, data length:', message.imageData.length);
+        try {
+            setBackground('image', message.imageData);
+            console.log('New background image set successfully');
+            
+            // Save the image to storage after confirming it works
+            chrome.storage.local.set({ 
+                savedImage: message.imageData,
+                savedType: 'image'
+            }, function() {
+                if (chrome.runtime.lastError) {
+                    console.error('Error saving image to storage:', chrome.runtime.lastError);
+                } else {
+                    console.log('Image saved to storage successfully');
+                }
+            });
+            
+            // Remove saved color when setting image
+            chrome.storage.local.remove(['savedColor']);
+        } catch (error) {
+            console.error('Error setting new background image:', error);
+            chrome.storage.local.remove(['savedImage', 'savedType']);
+        }
+    }
+    else if (message.action === 'removeImage') {
+        console.log('Removing image from content script');
+        setBackground('color', '#ffffff'); // Reset to white
+        // Load the saved color if it exists
+        chrome.storage.local.get(['savedColor'], function(result) {
+            if (result.savedColor) {
+                setBackground('color', result.savedColor);
+            }
+        });
+    }
+    else if (message.action === 'setDynamicBackground') {
+        setBackground('dynamic');
+        chrome.storage.local.set({ savedType: 'dynamic' });
+        chrome.storage.local.remove(['savedColor', 'savedImage']);
+    }
 });
 
-// Fonction pour appliquer le thème
-function applyTheme(theme) {
-  // Réinitialiser d'abord
-  document.body.style.backgroundColor = '';
-  document.body.style.backgroundImage = '';
-
-  // Appliquer selon le type
-  switch (theme.themeType) {
-    case 'color':
-      document.body.style.backgroundColor = theme.themeColor;
-      break;
-
-    case 'image':
-      if (theme.themeImage) {
-        document.body.style.backgroundImage = `url(${theme.themeImage})`;
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundAttachment = 'fixed';
-      }
-      break;
-
-    case 'dynamic':
-      // Ajouter une classe CSS pour l'animation
-      document.body.classList.add('dynamic-bg');
-      // Injecter la règle CSS d'animation
-      const style = document.createElement('style');
-      style.textContent = `
-        .dynamic-bg {
-          background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-          background-size: 400% 400%;
-          animation: gradient 15s ease infinite;
-        }
-        @keyframes gradient {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-      `;
-      document.head.appendChild(style);
-      break;
-  }
-
-  // Assurer la lisibilité du texte
-  adjustTextContrast();
-}
-
-// Ajuster la couleur du texte pour assurer la lisibilité
-function adjustTextContrast() {
-  // Logique pour ajuster la couleur du texte selon l'arrière-plan
-  // (implémentation simplifiée)
-  const isDark = document.body.style.backgroundColor &&
-    isColorDark(document.body.style.backgroundColor);
-
-  if (isDark) {
-    document.body.classList.add('light-text');
-  } else {
-    document.body.classList.remove('light-text');
-  }
-}
-
-// Déterminer si une couleur est sombre
-function isColorDark(color) {
-  // Logique simplifiée pour déterminer si une couleur est sombre
-  // Implémentation réelle nécessiterait une conversion RGB et calcul de luminosité
-  return color.match(/^#(?:[0-9a-f]{3}){1,2}$/i) &&
-         parseInt(color.substr(1), 16) < 8388608; // < 50% de luminosité
-}
 ```
 
 ### 5.6 Explications du code
