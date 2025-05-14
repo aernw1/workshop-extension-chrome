@@ -135,7 +135,7 @@ mon-extension/
 ├── icons/
 │   ├── // tous vos .png
 ├── styles.css
-└── background.js
+└── content.js
 ```
 
 ### 3.2 Chargement de l'extension en développement
