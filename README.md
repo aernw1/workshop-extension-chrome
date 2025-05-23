@@ -483,7 +483,7 @@ chrome.runtime.onMessage.addListener((message) => {
 - **Performance** : Évitez les boucles inutiles dans `addFileIcons`.
 
 ---
-## Partie 5 : Innovez et amusez vous 
+## Partie 5 : Innovez et amusez-vous :)
 
 ### Étape 5.1 : Personnalisez vos projets
 - Ajoutez plus d’icônes à "GitHub File Icons".
