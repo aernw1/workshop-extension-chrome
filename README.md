@@ -483,12 +483,14 @@ chrome.runtime.onMessage.addListener((message) => {
 - **Performance** : Évitez les boucles inutiles dans `addFileIcons`.
 
 ---
-
-## Partie 5 : Créez votre propre extension !
+## Partie 5 : Innovez et amusez vous 
 
 ### Étape 5.1 : Personnalisez vos projets
 - Ajoutez plus d’icônes à "GitHub File Icons".
 - Incluez une option d’image dans "GitHub Background Themes".
+
+### Étape 5.2 : Vous avez carte blanche !
+Maintenant que vous savez créer une extension chrome, libre à vous d'en faire une qui vous plaît pour n'importe quel autre site internet.
 
 ### Ressources
 - [Documentation Chrome Extensions](https://developer.chrome.com/docs/extensions/)
